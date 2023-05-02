@@ -6,9 +6,9 @@ include:
 ---
 metadata:
   title: |
-    Complaint for a No Fault or '1B' Divorce in Massachusetts
+    COMPLAINT FOR DIVORCE PURSUANT TO G.L. c. 208 § 1B 
   short title: |
-    No-Fault (1B) Divorce
+    No-Fault Complaint for Divorce
   tags:
     - Family
     - Divorce
@@ -54,7 +54,7 @@ code: |
   github_repo_name =  'docassemble-Labled1B'
 ---
 code: |
-  interview_short_title = "Complaint for a no-fault divorce in Massachusetts"
+  interview_short_title = "No-Fault Complaint for Divorce"
 ---
 code: |
   al_form_type = "starts_case" 
@@ -78,7 +78,6 @@ code: |
   user_ask_role = "plaintiff"
   marriage_location
   divorce_yes
-  suitable_support_yes
   users.gather()
   set_parts(subtitle=str(users))
   former[0]
@@ -91,11 +90,17 @@ code: |
   set_progress(42)
   children.gather()
   if children.there_are_any == True:
-    grant_custody_yes
-  docket_number
+    custody_status
+  suitable_support_yes
   set_progress(56)
   courts[0].division
+  if liberty_yes == True:
+    seek_assistance
   other_yes
+  today_date
+  #set_title_names
+  set_custody_status
+  set_grant_custody_yes
   interview_order_labled_1b = True
 ---
 ###################### Main order ######################
@@ -107,7 +112,6 @@ code: |
   al_intro_screen
   labled_1b_intro
   under_20_mins
-  next_steps_check
   interview_order_labled_1b
   signature_date
   # Store anonymous data for analytics / statistics
@@ -120,119 +124,328 @@ code: |
   )
   labled_1b_download
 ---
+id: sets date
+code: |
+ today_date = format_date(today())
+---
 id: Complaint_for_Divorce
 continue button field: labled_1b_intro
 question: |
-  What is this processes?
+  What is a "No-Fault Divorce"?
 subquestion: |
-  This is a tool that can help you complete a "1B" or "No-Fault" divorce form in Massachusetts.  If you and your spouse cannot agree on everything, you can file this complaint by yourself. It does not matter if your spouse wants a divorce. If you want one, you can file this complaint.
+ A "no-fault divorce," also known as a 1B divorce, simply means one of the spouses beleives the marriage has broken down and cannot be fixed. The court calls this an **"Irretrievable Breakdown."** In a 1B Divorce one party files, rathen than other types where both with file together.
+ 
+ This form can be used if you don't get along with your spouse and now want a divorce. 1B divorces can also be used when you and your spouse can't agree to get a divorce through one of the other types where you file it together.
+ 
+ If this does not sound right for you there is information on other options for divorce types available on [Massachussets official website](https://www.mass.gov/info-details/learn-about-the-types-of-divorce). Along with other resources made for people without attorneys, like [MassLegalHelp.org](https://www.masslegalhelp.org/children-and-families/file-for-divorce). 
 ---
 id: what to except
 continue button field: under_20_mins
 question: |
-  How long will it take?
+  Are you ready to continue?
 subquestion: |
-  It should take under 20 minutes to complete all the questions if you have all of the matieral you will need on hand. CLICK HERE for a list of everything you need to finish the questions.
----
-id: flagged next steps
-continue button field: next_steps_check
-question: |
-  When you are done with these questions.
-subquestion: |
-  Once you complete the interview you will get a document titled "Next-Steps."  It will give you information on what you have to do to complete filing for divorce.  
-
-# The divorce process is meant to take under 14 months from filing date to finalizing everything. (include in next-steps)
----
-id: Plaintiff Info
-question: |
-  Do you need the court to do any of the following?
-fields:
-  - "Do you need the court to make sure you or your children keep health insurance?": suitable_support_yes
-    datatype: yesnoradio
-#set these three questions into one multi-choice question about selecting who the aid is for. 
-  - "Will the health insurance be for you?": support_plaintiff_yes
-    datatype: yesnoradio
-    show if: suitable_support_yes
-  - "Will the health insurance be for any children?": support_children_yes
-    datatype: yesnoradio
-    show if: suitable_support_yes
-  - "Do you need to change your last name?": former_name_yes
-    datatype: yesnoradio
-    help: |
-      Last name is the same as 'family name' or 'sur name'. If you changed your last name as a part of the marriage and you want to change it back this is how you can do that.
-  - "What is the last name you are changing to.": former_name
-    maxlength: 35
-    show if: former_name_yes
-  - "Do you have saftey concerns due to this divorce?": saftey_yes
-    datatype: yesnoradio
-  - "Do you need the court to limit your spouses ability to restrict your rights?": liberty_yes
-    datatype: yesnoradio
-    show if: saftey_yes
-    help: |
-      If you are worried about your spouse harming you, your children, or your property then this is one oppritunity to notify the court of that concern.
-#Should there be an adendum attached with a description of the concern the litigant has if yes to relevant q's? 
----
-id: Children Info
-question: |
-  Provide information on any children invovled in this divorce. 
-fields:
-  - "Do you need the court to grant custody of any children?": grant_custody_yes
-    datatype: yesnoradio
-  - "Do you need the court to give you custody of the children?": custody_plaintiff_yes
-    datatype: yesnoradio
-    show if: grant_custody_yes
-  - "Do you want your spouse to have custody of any children?": custody_defendant_yes
-    datatype: yesnoradio
-    show if: grant_custody_yes
-    #set plaintiff and defendant custody questions to be exclusive - cant say yes to both
+  This process should take under **twenty minutes** to complete if you have all of the required material on hand.
+  
+  Be prepared to answer questions needing:
+   
+  * Personal Information
+  * Spouse Contact Information
+  * Information on Children of the marriage
+  * Information related to the marriage (e.g., Dates and Locations)
+  
+  Once you are done with this interview you will get a two documents. A printout for what to do next, titled **"Next Steps for filling your No-Fault Divorce"** and the completed **"Complaint for Divorce."**
 ---
 id: Marriage Information
 question: |
-  Please provide all the neccesary information about your marriage?
+  Provide all the neccesary information about your marriage.
 fields:
   - "Where did you and your spouse get married?": marriage_location
-    maxlength: 30
-  - "What date did you and your spouse get married?": marriage_date
-    datatype: date
-  - "What was the last address you and your spouse lived together at?": last_address_together
     maxlength: 36
+    hint: e.g., Boston, Massachusetts
+    help: |
+      Enter the city or town and state.
+  - "When did you and your spouse get married?": marriage_date
+    datatype: date
+  - "What is the full address where you and your spouse last lived together?": last_address_together
+    maxlength: 50
+    hint: e.g, 120 Tremont St. Boston, MA 02108
   - "When did you last live at this address together?": last_address_date
     datatype: date
-  - "What date do you think the marriage became hopeless?": breakdown_date
+  - "Approximatley what date did the marriage breakdown and become unfixable?": breakdown_date
     datatype: date
     help: |
-      This is how you tell the court when you think the relationship died. 
+      This date is when you started to think the marriage was over and you want a divorce. You can pick your best estimate if you are unsure.
+#Address of last lived should be switched to objects to make collection better.  The open space is prone to errors and lack uniform design choice. 
+---
+id: last address together gather
+question: |
+  What was the last address you and your spouse lived at together?
+fields:
+  - "City or Town": last_city
+    maxlength: 20
+    hint: Boston
+  - "Street and Number": last_street
+    maxlength: 36
+    hint: 120 Tremont Street
+  - "Zip Code": last_zip
+    maxlength: 5
+    hint: 02108
+  - "When did you last live at this address together?": last_address_date
+    datatype: date
+# attempted to gather last_address_together in peices then grouping in the field on the PDF. This was per the recomendation from one user. However, I tried to do this an failed on three different attempts. This is the question page I had inteded to use. 
+---
+id: Plaintiff Needs
+question: |
+  Do you need the court to do any of the following?
+fields:
+  - "Ensure you or your children keep any existing health insurance?": suitable_support_yes
+    datatype: yesnoradio
+  - "Is the health insurance for you?": support_plaintiff_yes
+    datatype: yesnoradio
+    show if: suitable_support_yes
+  - "Is the health insurance for any children?": support_children_yes
+    datatype: yesnoradio
+    show if: suitable_support_yes
+  - "Change your last name?": former_name_yes
+    datatype: yesnoradio
+    help: |
+      Last name is the same as "family name" or "surname." If you changed your last name as a part of the marriage and you want to change it back this is how you can do that.
+  - "What do you need your last name changed to?": former_name
+    maxlength: 45
+    show if: former_name_yes
+  - "Do you have safety concerns related to, or caused by, this divorce?": liberty_yes
+    datatype: yesnoradio
+    help: |
+      If you are worried about your spouse harming you, your children, or your property then this is one oppritunity to notify the court of that concern.
+#for the liberty value set up alternative ending as to instruct litigant to seek out legal assistance to continue. Either through the CSC, legal aid or some private attorney.    
+---
+id: Children Involved 
+question: |
+  Are there any children that were born or adopted into the marriage?
+subquestion: |
+  This includes children born prior to the marraige between the couple. This also includes children that either spouse has a parent or guardian role in. 
+  
+  **Only include minor or dependant children.**
+fields:
+  - no label: children.there_are_any
+    datatype: yesnoradio
+  - How many?: children.target_number
+    datatype: integer
+    show if: children.there_are_any
+validation code: |
+  if not children.there_are_any:
+    children.target_number = 0
+---
+id: Children custody prefrence
+question: |
+  Child Custody
+subquestion: |
+  Who do you need to have custody of the children? 
+field: custody_status
+choices:
+  - "${ users[0].name }"
+  - "${ other_parties[0].name }"
+---
+id: parent custody choice checkbox
+depends on: 
+  - custody_status
+  - custody_plaintiff_yes
+  - custody_defendant_yes
+code: |
+  if children.target_number >= 1:
+    if custody_status == users[0].name:
+      custody_plaintiff_yes = True
+      custody_defendant_yes = False
+    elif custody_status == other_parties[0].name:
+      custody_plaintiff_yes = False
+      custody_defendant_yes = True
+  set_custody_status = True
+---
+id: grant of custody checkbox
+code: |
+  if children.there_are_any == True:
+    grant_custody_yes = True
+  else:
+    grant_custody_yes = False
+  set_grant_custody_yes = True
+---
+id: children information gather
+sets:
+  - children[0].name.first
+  - children[0].name.last
+  - children[0].name.middle
+  - children[0].name.suffix
+  - children[0].birthdate
+question: |
+  % if hasattr(children, 'ask_number') and children.ask_number and children.target_number == 1:
+  What is your child's name?
+  % else:
+  What is the name of your first child?
+  % endif
+fields:
+  - code: |
+      children[0].name_fields()
+  - "Birthdate": children[0].birthdate
+    datatype: date
+---
+id: your name
+sets:
+    - users[0].name.first
+    - users[0].name.last
+    - users[0].name.middle
+    - users[0].name.suffix
+    - users[0].email
+    - users[0].phone_number
+question:  |
+  What is your legal name and contact information?
+fields:
+  - code: |
+      users[0].name_fields()
+  - "E-mail Address": users[0].email
+  - "Phone Number": users[0].phone_number
+---
+sets:
+  - other_parties[i].name.first
+  - other_parties[i].name.last
+  - other_parties[i].name.middle
+  - other_parties[i].name.suffix
+id: names of opposing parties
+question: |
+  What is your spouse's name.
+fields:
+  - code: |
+      other_parties[i].name_fields(person_or_business='person')
 ---
 id: Property Info
 question: |
-  Property Info
+  Information on Property Ownership 
 fields:
   - "Do you and your spouse own any real estate together?": convey_yes
     datatype: yesnoradio
-  - "What is the address of the real estate you need conveyed?": real_estate_address
+  - "What is the address of the real estate you need {conveyed}?": real_estate_address
     maxlength: 35
+    hint: e.g, 120 Tremont St, Boston MA, 02108
     show if: convey_yes
-  - "Who currently has the title to the property?": real_estate_name
-    maxlength: 49
+  - "Is ${ other_parties[0].name }'s and your name on the title?": both_title
+    datatype: noyesradio
     show if: convey_yes
-  - "Where is the Registery of Deeds that has the deed?": registry_deeds_location
-    maxlength: 23
+  - "Identify all names on the title.": title_names
+    maxlength: 100
+    show if: both_title
+  - "Which County Registery has the deed?": registry_deeds_location
+    input type: combobox
+    choices:
+     - Barnstable County
+     - Berkshire County
+     - Bristol County
+     - Dukes County
+     - Essex County
+     - Franklin County
+     - Hampden County
+     - Hampshire County
+     - Middlesex County
+     - Nantucket County
+     - Norfolk County
+     - Plymouth County
+     - Suffolk County
+     - Worcester County
     show if: convey_yes
-  - "What Registry book is it in?": registry_book
-    maxlength: 22
+  - "What Registry book number is it in?": registry_book
+    datatype: number
+    show if: convey_yes 
+  - "What Registry page number is it in?": registry_page
+    datatype: number
     show if: convey_yes
-  - "What Registry page is it in?": registry_page
-    maxlength: 10
-    show if: convey_yes
+terms:
+ conveyed: |
+   To convey something means to change ownership of it. It is a word used when you change who owns property. 
+---
+#id: setting title names
+#depends on:
+#  - both_title
+#  - title_names
+#code: |
+#  if both_title == False:
+#    real_estate_name = user[0].name + "and" + other_parties[0].name
+#  elif both_title == True:
+#    real_estate_name = title_names
+#  else:
+#    " "
+#  set_title_names = True
+comment: This block kept returning error realted to having user[0].name. I changed the method to just do it in the attachment block. This provides the inteded output without error. Ideally I would gather as a variable rather than the current method. 
+---
+if: |
+  len(all_matches) and all_courts.filter_courts(allowed_courts) 
+id: choose a court (courts matching provided address were found)
+question: |
+  What court do you want to file in?
+subquestion: |
+  % if not al_form_type == 'starts_case':
+  Look at your court paperwork. Match the name listed there.
+  % endif
+
+  % if len(all_matches) > 0:
+  Below is a map of the court(s) that serve
+  the address you gave us, 
+  % if isinstance(addresses_to_search, Iterable):
+  ${comma_and_list([address.on_one_line() for address in addresses_to_search],comma_string='; ')}.
+  % else:
+  ${addresses_to_search.on_one_line()}
+  % endif
+  
+  ${map_of(combined_locations(all_matches))}
+  % endif
+  
+  ${ collapse_template(how_to_pick_court_help_template) }  
+fields:
+  - no label: trial_court
+    datatype: object_radio
+    choices: all_matches
+    none of the above: True
+    disable others: True
+    object labeler: court_short_description
+    show if: 
+      code: |
+        len(all_matches)      
+  - note: |
+      Does the list above look wrong? If your case was filed in
+      a court we didn't list, choose from the full list below.
+    show if: 
+      code: |
+        len(all_matches)
+  - no label: trial_court
+    datatype: object
+    object labeler: court_short_label
+    choices: all_courts.filter_courts(allowed_courts)   
+# This needs to be set so if the other user lives in the county that they last lived in together they need to file there, else they need to file where they live now. 
 ---
 id: Final Screen
 question: |
-  Final Screen
-fields:
-  - "Is there any other info you want considered by the judge?": other_yes
-    datatype: yesno
-  - "Confirm todays date, ${ today() }.": today_date
-    datatype: date
+  Is there anything else you think the judge should consider?
+subquestion: |
+  This can be a useful location to identify any concerns about the divorce you might have. If you indicated a concern about saftey please describe the reason you have this concern to the extent you are comfortable.
+fields: 
+  - "Is there additional information you want considered?": other_yes
+    datatype: yesnoradio
+  - "Describe:": additional_context
+    input type: area
+    show if: other_yes
+---
+field: seek_assistance
+question: You identified a saftey concern.
+subquestion: |
+  ${ users[0].name }, you identified a **saftey concerns** related to divorcing your spouse. Given this concern it is in your best interest to take advantage of any and all professional legal assistance available to you before moving forward. 
+  
+  **Consider seeking help from the below resources.**
+  
+  * The Trial Court Service Center
+  * Greater Boston Legal Services
+  * North East Legal Aid
+  * Volunteer Lawyers Project
+  
+  Consult the [Massachusetts Legal Resource Finder](https://masslrf.org/en/home) for resources available to you based upon your situation. 
+  
+  You should still download the complaint you have just completed. Show it to any legal professionals  who provide you with additional assistance on this issue. 
 ---
 id: is there an opposing party?
 question: |
@@ -257,18 +470,6 @@ fields:
     datatype: yesnoradio
 ---
 sets:
-  - other_parties[i].name.first
-  - other_parties[i].name.last
-  - other_parties[i].name.middle
-  - other_parties[i].name.suffix
-id: names of opposing parties
-question: |
-  Enter the full name for your current spouse.
-fields:
-  - code: |
-      other_parties[i].name_fields(person_or_business='person')
----
-sets:
   - x.address.address
   - x.address.city
   - x.address.zip
@@ -282,13 +483,15 @@ question: |
 fields:
   - code: |
       x.address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE)
-# I want to add a check that asks if it is known.  This is geared for CSC clients.  Probably twice a week I would speak with someone who does not have the address for the other party, we need to work that process into this interview. 
 ---
 code: |
   user_ask_role = 'plaintiff'
   other_parties.there_are_any = True
   other_parties.there_is_another = False #setting other parties to only be one ever.
-  divorce_yes = True # this is checking the box on the form. it can be assumed that they want the divorce from using the form
+---
+code: |
+  divorce_yes = True 
+# this checks the box stating an irretrievble breakdown on the form. 
 ---
 id: preview labled_1b
 question: |
@@ -315,6 +518,7 @@ code: |
   # a different address than the user's
   [user.address.address for user in users.complete_elements()]
   addresses_to_search = [user.address for user in users.complete_elements()]
+  # This will need to 
 ---
 id: labled 1b review screen
 event: review_labled_1b
@@ -502,7 +706,6 @@ edit:
   - name.first
   - address.zip
 confirm: True
-
 ---
 continue button field: children.revisit
 question: |
@@ -520,13 +723,6 @@ columns:
 edit:
   - name.first
 confirm: True
-
----
-#This is a code block for trying to set some static values it asking the user for. 
-#Probably a better solution than this. 
-#code: |
-#  other_parties.there_are_any = 'True'
-#  other_parties[i].name_fields(person_or_business='True')
 ---
 id: download labled_1b
 event: labled_1b_download
@@ -579,10 +775,10 @@ attachment:
       - "users": ${ users }
       - "defendants": ${ defendants }
       - "users_address_county": ${ users[0].address.county }
-      - "users1_address_address": ${ users[0].address.address }
-      - "users1_address_city": ${ users[0].address.city }
-      - "users1_address_zip": ${ users[0].address.zip }
-      - "users1_address_state": ${ users[0].address.state }
+      - "users1_address_address1": ${ users[0].address.address }
+      - "users1_address_city1": ${ users[0].address.city }
+      - "users1_address_zip1": ${ users[0].address.zip }
+      - "users1_address_state1": ${ users[0].address.state }
       - "defendants_address_address": ${ defendants[0].address.address }
       - "defendants_address_city": ${ defendants[0].address.city }
       - "defendants_address_county": ${ defendants[0].address.county }
@@ -596,6 +792,10 @@ attachment:
       - "child3": ${ children[2] }
       - "child2": ${ children[1] }
       - "child4": ${ children[3] }
+      - "child1_birthdate": ${ format_date(children[0].birthdate, format='short') }
+      - "child2_birthdate": ${ format_date(children[1].birthdate, format='short') }
+      - "child3_birthdate": ${ format_date(children[2].birthdate, format='short') }
+      - "child4_birthdate": ${ format_date(children[3].birthdate, format='short') }
       - "breakdown_date": ${ breakdown_date.format() }
       - "divorce_yes": ${ divorce_yes }
       - "grant_custody_yes": ${ grant_custody_yes }
@@ -607,13 +807,25 @@ attachment:
       - "support_children_yes": ${ support_children_yes }
       - "real_estate_address": ${ real_estate_address }
       - "convey_yes": ${ convey_yes }
-      - "real_estate_name": ${ real_estate_name }
+      - "real_estate_name": |
+          % if both_title == False:
+            ${ users[0].name} and ${ other_parties[0].name }
+          % else:
+            ${ title_names }
+          %endif
       - "registry_deeds_location": ${ registry_deeds_location }
-      - "registry_book": ${ registry_book }
-      - "registry_page": ${ registry_page }
+      - "registry_book": ${ int(registry_book) }
+      - "registry_page": ${ int(registry_page) }
       - "former_name": ${ former_name }
       - "former_name_yes": ${ former_name_yes }
       - "other_yes": ${ other_yes }
-      - "today_date": ${ today_date.format() }
-
-
+      - "additional_context": ${ additional_context }
+      - "today_date": ${ today_date }
+      - "users1_name": ${ users[0].name }
+      - "users1_address_address2": ${ users[0].address.address }
+      - "users1_address_city2": ${ users[0].address.city }
+      - "users1_address_zip2": ${ users[0].address.zip }
+      - "users1_address_state2": ${ users[0].address.state }
+      - "users1_address_unit": ${ users[0].address.unit }
+      - "users1_email": ${ users[0].email }
+      - "users1_phone_number": ${ users[0].phone_number }

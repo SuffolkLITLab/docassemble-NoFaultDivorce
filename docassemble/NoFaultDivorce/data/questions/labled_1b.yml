@@ -402,7 +402,7 @@ fields:
   - "Do you have safety concerns related to, or caused by, this divorce?": liberty_yes
     datatype: yesnoradio
     help: |
-      If you are worried about your spouse harming you, your children, or your property then this is one oppritunity to notify the court of that concern.
+      If you are worried about your spouse harming you, your children, or your property, this is one way to tell the judge.
 ---
 field: seek_assistance
 question: You identified a safety concern.

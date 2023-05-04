@@ -96,7 +96,6 @@ code: |
   courts[0].division
   if liberty_yes == True:
     seek_assistance
-  other_yes
   today_date
   #set_title_names
   set_custody_status
@@ -133,11 +132,11 @@ continue button field: labled_1b_intro
 question: |
   What is a "No-Fault Divorce"?
 subquestion: |
- A "no-fault divorce," also known as a 1B divorce, simply means one of the spouses beleives the marriage has broken down and cannot be fixed. The court calls this an **"Irretrievable Breakdown."** In a 1B Divorce one party files, rathen than other types where both with file together.
+ A "no-fault divorce," also known as a 1B divorce, simply means one of the spouses believes the marriage has broken down and cannot be fixed. The court calls this an **"Irretrievable Breakdown."** In a 1B Divorce one party files, rather than other types where both with file together.
  
  This form can be used if you don't get along with your spouse and now want a divorce. 1B divorces can also be used when you and your spouse can't agree to get a divorce through one of the other types where you file it together.
  
- If this does not sound right for you there is information on other options for divorce types available on [Massachussets official website](https://www.mass.gov/info-details/learn-about-the-types-of-divorce). Along with other resources made for people without attorneys, like [MassLegalHelp.org](https://www.masslegalhelp.org/children-and-families/file-for-divorce). 
+ If this does not sound right for you there is information on other options for divorce types available on [Massachusetts official website](https://www.mass.gov/info-details/learn-about-the-types-of-divorce). Along with other resources made for people without attorneys, like [MassLegalHelp.org](https://www.masslegalhelp.org/children-and-families/file-for-divorce). 
 ---
 id: what to except
 continue button field: under_20_mins
@@ -157,18 +156,18 @@ subquestion: |
 ---
 id: Marriage Information
 question: |
-  Provide all the neccesary information about your marriage.
+  Provide all the necessary information about your marriage.
 fields:
   - "Where did you and your spouse get married?": marriage_location
     maxlength: 36
-    hint: e.g., Boston, Massachusetts
+    hint: e.g. Boston, Massachusetts
     help: |
       Enter the city or town and state.
   - "When did you and your spouse get married?": marriage_date
     datatype: date
   - "What is the full address where you and your spouse last lived together?": last_address_together
     maxlength: 50
-    hint: e.g, 120 Tremont St. Boston, MA 02108
+    hint: e.g. 120 Tremont St. Boston, MA 02108
   - "When did you last live at this address together?": last_address_date
     datatype: date
   - "Approximatley what date did the marriage breakdown and become unfixable?": breakdown_date
@@ -177,22 +176,22 @@ fields:
       This date is when you started to think the marriage was over and you want a divorce. You can pick your best estimate if you are unsure.
 #Address of last lived should be switched to objects to make collection better.  The open space is prone to errors and lack uniform design choice. 
 ---
-id: last address together gather
-question: |
-  What was the last address you and your spouse lived at together?
-fields:
-  - "City or Town": last_city
-    maxlength: 20
-    hint: Boston
-  - "Street and Number": last_street
-    maxlength: 36
-    hint: 120 Tremont Street
-  - "Zip Code": last_zip
-    maxlength: 5
-    hint: 02108
-  - "When did you last live at this address together?": last_address_date
-    datatype: date
-# attempted to gather last_address_together in peices then grouping in the field on the PDF. This was per the recomendation from one user. However, I tried to do this an failed on three different attempts. This is the question page I had inteded to use. 
+#id: last address together gather
+#question: |
+#  What was the last address you and your spouse lived at together?
+#fields:
+#  - "City or Town": last_city
+#    maxlength: 20
+#    hint: Boston
+#  - "Street and Number": last_street
+#    maxlength: 36
+#    hint: 120 Tremont Street
+#  - "Zip Code": last_zip
+#    maxlength: 5
+#    hint: 02108
+#  - "When did you last live at this address together?": last_address_date
+#    datatype: date
+comment: attempted to gather last_address_together in pieces rather than grouping in the field on the PDF. This was per the recommendation from one user. However, I tried to do this an failed on three different attempts. This is the question page I had intended to use. 
 ---
 id: Plaintiff Needs
 question: |
@@ -213,30 +212,31 @@ fields:
   - "What do you need your last name changed to?": former_name
     maxlength: 45
     show if: former_name_yes
-  - "Do you have safety concerns related to, or caused by, this divorce?": liberty_yes
+  - "Is there anything else you need the court to do?": other_yes
     datatype: yesnoradio
-    help: |
-      If you are worried about your spouse harming you, your children, or your property then this is one oppritunity to notify the court of that concern.
-#for the liberty value set up alternative ending as to instruct litigant to seek out legal assistance to continue. Either through the CSC, legal aid or some private attorney.    
+  - "Describe:": additional_context
+    input type: area
+    show if: other_yes    
 ---
 id: Children Involved 
 question: |
   Are there any children that were born or adopted into the marriage?
 subquestion: |
-  This includes children born prior to the marraige between the couple. This also includes children that either spouse has a parent or guardian role in. 
+  This includes children born prior to the marriage between the couple. This also includes children that either spouse has a parent or guardian role in. 
   
-  **Only include minor or dependant children.**
+  **Only include minor or dependent children.**
 fields:
   - no label: children.there_are_any
     datatype: yesnoradio
   - How many?: children.target_number
     datatype: integer
+    max: 4
     show if: children.there_are_any
 validation code: |
   if not children.there_are_any:
     children.target_number = 0
 ---
-id: Children custody prefrence
+id: Children custody preference
 question: |
   Child Custody
 subquestion: |
@@ -324,7 +324,7 @@ fields:
     datatype: yesnoradio
   - "What is the address of the real estate you need {conveyed}?": real_estate_address
     maxlength: 35
-    hint: e.g, 120 Tremont St, Boston MA, 02108
+    hint: e.g. 120 Tremont St, Boston MA, 02108
     show if: convey_yes
   - "Is ${ other_parties[0].name }'s and your name on the title?": both_title
     datatype: noyesradio
@@ -372,7 +372,7 @@ terms:
 #  else:
 #    " "
 #  set_title_names = True
-comment: This block kept returning error realted to having user[0].name. I changed the method to just do it in the attachment block. This provides the inteded output without error. Ideally I would gather as a variable rather than the current method. 
+comment: This block kept returning error related to having user[0].name. I changed the method to just do it in the attachment block. This provides the intended output without error. Ideally I would gather as a variable rather than the current method. 
 ---
 if: |
   len(all_matches) and all_courts.filter_courts(allowed_courts) 
@@ -380,61 +380,34 @@ id: choose a court (courts matching provided address were found)
 question: |
   What court do you want to file in?
 subquestion: |
-  % if not al_form_type == 'starts_case':
-  Look at your court paperwork. Match the name listed there.
-  % endif
+  You can only file in two court divisions. If your spouse currently lives in the same county where you last lived together, at ${ last_address_together }, then you must file in that county.
+  
+  If your spouse does not live in that county, you can file in the county they currently live or in the county you currently live. 
 
-  % if len(all_matches) > 0:
-  Below is a map of the court(s) that serve
-  the address you gave us, 
-  % if isinstance(addresses_to_search, Iterable):
-  ${comma_and_list([address.on_one_line() for address in addresses_to_search],comma_string='; ')}.
-  % else:
-  ${addresses_to_search.on_one_line()}
-  % endif
-  
   ${map_of(combined_locations(all_matches))}
-  % endif
   
-  ${ collapse_template(how_to_pick_court_help_template) }  
-fields:
-  - no label: trial_court
-    datatype: object_radio
-    choices: all_matches
-    none of the above: True
-    disable others: True
-    object labeler: court_short_description
-    show if: 
-      code: |
-        len(all_matches)      
+  The map above is the closest court to the address you provided in ${ users[0].address.city }.
+fields:   
   - note: |
-      Does the list above look wrong? If your case was filed in
-      a court we didn't list, choose from the full list below.
-    show if: 
-      code: |
-        len(all_matches)
+      Pick the court you plan to file in from the dropdown menu.  
   - no label: trial_court
     datatype: object
     object labeler: court_short_label
     choices: all_courts.filter_courts(allowed_courts)   
-# This needs to be set so if the other user lives in the county that they last lived in together they need to file there, else they need to file where they live now. 
 ---
 id: Final Screen
 question: |
-  Is there anything else you think the judge should consider?
-subquestion: |
-  This can be a useful location to identify any concerns about the divorce you might have. If you indicated a concern about saftey please describe the reason you have this concern to the extent you are comfortable.
+  Are you safe?
 fields: 
-  - "Is there additional information you want considered?": other_yes
+  - "Do you have safety concerns related to, or caused by, this divorce?": liberty_yes
     datatype: yesnoradio
-  - "Describe:": additional_context
-    input type: area
-    show if: other_yes
+    help: |
+      If you are worried about your spouse harming you, your children, or your property then this is one oppritunity to notify the court of that concern.
 ---
 field: seek_assistance
-question: You identified a saftey concern.
+question: You identified a safety concern.
 subquestion: |
-  ${ users[0].name }, you identified a **saftey concerns** related to divorcing your spouse. Given this concern it is in your best interest to take advantage of any and all professional legal assistance available to you before moving forward. 
+  ${ users[0].name }, since identified a **safety concern** related to divorcing your spouse it is very important to take advantage of any and all professional legal assistance available to you before moving forward. The options identified below are either free for everyone who does not have an attorney or are Legal Aid groups for people who are low-income.
   
   **Consider seeking help from the below resources.**
   
@@ -779,9 +752,9 @@ attachment:
       - "users1_address_city1": ${ users[0].address.city }
       - "users1_address_zip1": ${ users[0].address.zip }
       - "users1_address_state1": ${ users[0].address.state }
-      - "defendants_address_address": ${ defendants[0].address.address }
+      - "defendants_address_address": ${ other_parties[0].address.address }
       - "defendants_address_city": ${ defendants[0].address.city }
-      - "defendants_address_county": ${ defendants[0].address.county }
+      - "defendants_address_county": ${ other_parties[0].address.county }
       - "defendants_address_state": ${ defendants[0].address.state }
       - "defendants_address_zip": ${ defendants[0].address.zip }
       - "marriage_location": ${ marriage_location }

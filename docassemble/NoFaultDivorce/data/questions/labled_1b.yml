@@ -226,7 +226,7 @@ subquestion: |
   
   **Only include minor or dependent children.**
 fields:
-  - no label: children.there_are_any
+  - "Are there any children that were born or adopted into the marriage?": children.there_are_any
     datatype: yesnoradio
   - How many?: children.target_number
     datatype: integer
@@ -405,6 +405,7 @@ fields:
       If you are worried about your spouse harming you, your children, or your property, this is one way to tell the judge.
 ---
 field: seek_assistance
+id: "you identified a safety concern"
 question: You identified a safety concern.
 subquestion: |
   ${ users[0].name }, since identified a **safety concern** related to divorcing your spouse it is very important to take advantage of any and all professional legal assistance available to you before moving forward. The options identified below are either free for everyone who does not have an attorney or are Legal Aid groups for people who are low-income.
@@ -624,6 +625,7 @@ review:
       ${ today_date }
 ---
 continue button field: courts.revisit
+id: "edit courts"
 question: |
   Edit courts
 subquestion: |
@@ -641,6 +643,7 @@ edit:
 confirm: True
 ---
 continue button field: users.revisit
+id: "edit users"
 question: |
   Edit users
 subquestion: |
@@ -661,6 +664,7 @@ edit:
 confirm: True
 ---
 continue button field: defendants.revisit
+id: "edit defendants"
 question: |
   Edit defendants
 subquestion: |
@@ -681,6 +685,7 @@ edit:
 confirm: True
 ---
 continue button field: children.revisit
+id: "edit children"
 question: |
   Edit children
 subquestion: |
